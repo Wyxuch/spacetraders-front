@@ -1,17 +1,19 @@
-import { useRouter } from 'next/router';
-import { ReactNode } from 'react';
+'use client';
+
+import { useRouter } from 'next/navigation';
+import { ReactNode, useEffect } from 'react';
 
 import { useAuthContext } from '@context/AuthContext';
-
-import './globals.css';
 
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
   const router = useRouter();
   const { token } = useAuthContext();
 
-  if (!token) {
-    router.push('/');
-  }
+  useEffect(() => {
+    if (!token) {
+      router.push('/');
+    }
+  }, [token, router]);
 
   return <div>{children}</div>;
 }

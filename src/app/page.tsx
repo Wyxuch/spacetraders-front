@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 import { useAuthContext } from '@context/AuthContext';
 
@@ -11,12 +12,20 @@ import { Input } from '@components/shadcn/ui/input';
 import { Label } from '@components/shadcn/ui/label';
 
 export default function Home() {
-  const { setToken } = useAuthContext();
-  const [tokenValue, setTokenValue] = useState<string | undefined>();
+  const router = useRouter();
+  const { token, setToken } = useAuthContext();
+  const [tokenValue, setTokenValue] = useState<string>('');
+
+  useEffect(() => {
+    if (token) {
+      router.push('/dashboard');
+    }
+  }, [token, router]);
 
   const handleSubmit = () => {
     if (tokenValue) {
       setToken(tokenValue);
+      router.push('/dashboard');
     }
   };
 
@@ -32,7 +41,7 @@ export default function Home() {
           </CardHeader>
           <CardContent>
             <Label htmlFor="token">Token</Label>
-            <Input id="token" placeholder="Token" value={tokenValue} />
+            <Input id="token" placeholder="Token" value={tokenValue} onChange={e => setTokenValue(e.target.value)} />
           </CardContent>
           <CardFooter>
             <Button onClick={handleSubmit}>Submit</Button>
