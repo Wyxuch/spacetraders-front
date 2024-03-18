@@ -4,7 +4,7 @@ import { Dispatch, ReactNode, useContext, useEffect, useState } from 'react';
 import { createContext } from 'react';
 
 export interface AuthContextValue {
-  token: string;
+  token: string | undefined;
   setToken: Dispatch<string>;
   removeToken: () => void;
 }
@@ -16,7 +16,7 @@ interface Props {
 export const AuthContext = createContext<AuthContextValue>({ token: '', setToken: () => {}, removeToken: () => {} });
 
 export const AuthContextProvider = ({ children }: Props) => {
-  const [token, setToken] = useState('');
+  const [token, setToken] = useState<string | undefined>();
 
   useEffect(() => {
     if (!token) {
@@ -37,7 +37,9 @@ export const AuthContextProvider = ({ children }: Props) => {
     setToken(undefined);
   };
 
-  return <AuthContext.Provider value={{ token, setTokenLocal, removeToken }}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={{ token, setToken: setTokenLocal, removeToken }}>{children}</AuthContext.Provider>
+  );
 };
 
 export const useAuthContext = () => {
