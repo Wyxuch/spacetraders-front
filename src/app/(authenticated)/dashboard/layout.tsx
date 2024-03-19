@@ -34,9 +34,11 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
   const [response, setResponse] = useState<ShipStatus | null>(null);
 
   useEffect(() => {
-    fetch<ShipStatus, undefined>(`${BASE_URL}/my/ships`).then(res => {
-      setResponse(res);
-    });
+if(!response){
+  fetch<ShipStatus, undefined>(`${BASE_URL}/my/ships`).then(res => {
+    setResponse(res);
+  });
+}
   }, [fetch, setResponse]);
 
   const handleClick = () => {
@@ -49,10 +51,10 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
 
   return (
     <div className={'flex p-4 min-h-screen gap-4'}>
-      <nav>
-        <Card className={'h-full w-40 p-2'}>
+      <nav className='w-[260px]'>
+        <Card className={'h-full w-full p-2'}>
           <Popover open={open} onOpenChange={setOpen}>
-            <PopoverTrigger asChild>
+            <PopoverTrigger asChild className={'mb-2'}>
               <Button variant="outline" role="combobox" aria-expanded={open} className="w-[200px] justify-between">
                 {value ? ships.find(ship => ship === value) : 'Select Ship...'}
                 <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
