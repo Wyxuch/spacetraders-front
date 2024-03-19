@@ -98,6 +98,21 @@ if(!response){
           >
             Scan
           </Button>
+          <Button
+            onClick={() => router.push('dashboard/location')}
+            variant={'outline'}
+            className={'w-full text-left justify-between mb-2'}
+          >
+            Location
+          </Button>
+          <Button
+            onClick={() => router.push('dashboard/contracts')}
+            variant={'outline'}
+            className={'w-full text-left justify-between mb-2'}
+          >
+            Contracts
+          </Button>
+          
           <Button onClick={removeToken} variant={'destructive'} className={'w-full text-left justify-between'}>
             Log Out
           </Button>

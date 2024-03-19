@@ -24,7 +24,7 @@ export default function Home() {
   return (
     <Card className={'w-full h-full'}>
       <CardContent>
-        <Button onClick={handleClick}>ddd</Button>
+        <Button onClick={handleClick}>View Status</Button>
         <p>{response ? JSON.stringify(response) : 'Empty'}</p>
       </CardContent>
     </Card>
