@@ -2,7 +2,9 @@
 
 import { useState } from 'react';
 
-import { ShipStatus, fetchShipStatus } from '@api/ship/status';
+import { BASE_URL } from '@consts/common';
+
+import { ShipStatus } from '@api/types';
 
 import { Button } from '@components/shadcn/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@components/shadcn/ui/card';
@@ -14,7 +16,7 @@ export default function Home() {
   const [response, setResponse] = useState<ShipStatus | null>(null);
 
   const handleClick = () => {
-    fetch<typeof fetchShipStatus, ShipStatus>(fetchShipStatus).then(res => {
+    fetch<ShipStatus, undefined>(`${BASE_URL}/my/ships`).then(res => {
       setResponse(res);
     });
   };

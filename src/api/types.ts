@@ -1,16 +1,8 @@
-import { BASE_URL, ROUTES } from '@consts/url';
-
-import { Meta } from '@api/common';
-
-export const fetchShipStatus = (token: string) => {
-  console.log(token);
-  return fetch(`${BASE_URL}/${ROUTES.myShips}`, {
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`
-    }
-  });
-};
+export interface Meta {
+  total: number;
+  page: number;
+  limit: number;
+}
 
 interface Data {
   symbol: string;

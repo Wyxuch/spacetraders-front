@@ -2,16 +2,27 @@ import { useAuthContext } from '@context/AuthContext';
 
 export const useApi = () => {
   const { token, removeToken } = useAuthContext();
-
-  // na razie tylko GET działa
-  return async <T extends (token: string, ...args: string[]) => Promise<Response>, K>(
-    apiCall: T,
-    ...args: string[]
-  ): Promise<K | null> => {
+  return async <T, K>(url: string, body?: K, incomingMethod?: 'GET' | 'PUT' | 'POST' | 'DELETE'): Promise<T | null> => {
     try {
-      const res = await apiCall(token!, ...(args || ([] as string[])));
+      let method = 'GET';
+      if (body) {
+        method = 'POST';
+      }
+
+      if (incomingMethod) {
+        method = incomingMethod;
+      }
+
+      const res = await fetch(url, {
+        method: method,
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        }
+      });
+
       if (res.ok) {
-        return (await res.json()) as K;
+        return (await res.json()) as T;
       } else {
         if (res.status === 403 || res.status === 401) {
           console.log('Wrong token, logging out...');
