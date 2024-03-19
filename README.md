@@ -1,5 +1,10 @@
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
+## COMPONENTS!
+tu na lewo są komponenty tylko najpierw sprawdz czy juz nie jest dodany
+https://ui.shadcn.com/docs/components/
+
+
 ## Getting Started
 
 First, run the development server:
