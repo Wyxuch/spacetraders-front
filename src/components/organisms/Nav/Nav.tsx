@@ -1,3 +1,4 @@
+import { BlendIcon } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 
 import { BASE_URL } from '@consts/common';
@@ -19,19 +20,40 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from '@components/shadcn/ui/popover';
 
 import { useApi } from '@hooks/useApi';
-import { CaretSortIcon, CheckIcon } from '@radix-ui/react-icons';
+import {
+  ArchiveIcon,
+  BlendingModeIcon,
+  CaretSortIcon,
+  CheckIcon,
+  RocketIcon,
+  SewingPinFilledIcon,
+  StopwatchIcon
+} from '@radix-ui/react-icons';
 
 export const Nav = () => {
-  const { setShip } = useShipsContext();
+  const { ship, setShip } = useShipsContext();
   const fetch = useApi();
   const [response, setResponse] = useState<ShipStatus | null>(null);
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState('');
+  const [coolDown, setCoolDown] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (coolDown > 0) {
+        setCoolDown(coolDown - 1);
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [setCoolDown]);
 
   const setSelectedShip = useCallback(
     (shipSymbol: string) => {
+      const currShip = response?.data.find(ship => ship.symbol === shipSymbol);
       setValue(shipSymbol);
-      setShip(response?.data.find(ship => ship.symbol === shipSymbol));
+      setCoolDown(currShip?.cooldown.remainingSeconds || 0);
+      setShip(currShip);
     },
     [response?.data, setShip]
   );
@@ -40,10 +62,6 @@ export const Nav = () => {
     if (!response) {
       fetch<ShipStatus, undefined>(`${BASE_URL}/my/ships`).then(res => {
         setResponse(res);
-        // Set first ship on enter
-        if (res) {
-          setSelectedShip(res.data[0].symbol);
-        }
       });
     }
   }, [fetch, response, setResponse, setSelectedShip]);
@@ -84,6 +102,31 @@ export const Nav = () => {
             </Command>
           </PopoverContent>
         </Popover>
+
+        <div className={'flex items-center gap-1'}>
+          <BlendingModeIcon />
+          <p>{`${ship?.fuel.current || 0}/${ship?.fuel.capacity || 0}`}</p>
+        </div>
+
+        <div className={'flex items-center gap-1'}>
+          <SewingPinFilledIcon />
+          <p>{ship?.nav.waypointSymbol}</p>
+        </div>
+
+        <div className={'flex items-center gap-1'}>
+          <RocketIcon />
+          <p>{ship?.nav.status}</p>
+        </div>
+
+        <div className={'flex items-center gap-1'}>
+          <ArchiveIcon />
+          <p>{`${ship?.cargo.units || 0}/${ship?.cargo.capacity || 0}`}</p>
+        </div>
+
+        <div className={'flex items-center gap-1'}>
+          <StopwatchIcon />
+          <p>{ship?.cooldown.remainingSeconds}</p>
+        </div>
       </Card>
     </nav>
   );
