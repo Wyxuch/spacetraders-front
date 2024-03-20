@@ -13,14 +13,14 @@ const Sidebar = () => {
     <aside className={`w-[240px] h-full p-4 pr-0`}>
       <Card className={'h-full w-full p-2 overflow-y-scroll'}>
         <Button
-          onClick={() => router.push('dashboard/ship')}
+          onClick={() => router.push('/dashboard')}
           variant={'outline'}
           className={'w-full text-left justify-between mb-2'}
         >
-          Ship
+          Dashboard
         </Button>
         <Button
-          onClick={() => router.push('dashboard/scan')}
+          onClick={() => router.push('/dashboard/scan')}
           variant={'outline'}
           className={'w-full text-left justify-between mb-2'}
         >

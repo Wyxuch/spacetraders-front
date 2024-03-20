@@ -3,23 +3,39 @@
 import { Dispatch, ReactNode, useContext, useState } from 'react';
 import { createContext } from 'react';
 
-import { ShipData } from '@api/types';
+import { BASE_URL } from '@consts/common';
+
+import { ShipData, ShipStatus, SingleShipStatus } from '@api/types';
+
+import { useApi } from '@hooks/useApi';
 
 export interface ShipsContextValue {
   ship: ShipData | undefined;
   setShip: Dispatch<ShipData | undefined>;
+  refreshShip: () => void;
 }
 
 interface Props {
   children: ReactNode;
 }
 
-export const ShipsContext = createContext<ShipsContextValue>({ ship: undefined, setShip: () => {} });
+export const ShipsContext = createContext<ShipsContextValue>({
+  ship: undefined,
+  setShip: () => {},
+  refreshShip: () => {}
+});
 
 export const ShipsContextProvider = ({ children }: Props) => {
+  const fetch = useApi();
   const [ship, setShip] = useState<ShipData | undefined>();
 
-  return <ShipsContext.Provider value={{ ship, setShip }}>{children}</ShipsContext.Provider>;
+  const refresh = () => {
+    fetch<SingleShipStatus, undefined>(`${BASE_URL}/my/ships/${ship?.symbol}`).then(res => {
+      if (res) setShip(res.data);
+    });
+  };
+
+  return <ShipsContext.Provider value={{ ship, setShip, refreshShip: refresh }}>{children}</ShipsContext.Provider>;
 };
 
 export const useShipsContext = () => {
