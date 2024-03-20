@@ -82,7 +82,11 @@ export default function Home() {
 
             {/*CARGO*/}
             <h3 className={'mb-2 text-xl'}>{`Cargo ${ship.cargo.units}/${ship.cargo.capacity}`}</h3>
-            <Accordion type={'single'}>{JSON.stringify(ship.cargo.inventory)}</Accordion>
+            <div className={'grid grid-cols-4'}>
+              {ship.cargo.inventory.map((item, index) => (
+                <Paragraph key={item.symbol + index}>{`${item.name}: ${item.units}`}</Paragraph>
+              ))}
+            </div>
             <Separator className={'m-2'} />
 
             {/*CREW*/}
