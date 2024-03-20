@@ -1,4 +1,3 @@
-import { BlendIcon } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 
 import { BASE_URL } from '@consts/common';
@@ -31,12 +30,11 @@ import {
 } from '@radix-ui/react-icons';
 
 export const Nav = () => {
-  const { ship, setShip } = useShipsContext();
+  const { ship, setShip, coolDown, setCoolDown } = useShipsContext();
   const fetch = useApi();
   const [response, setResponse] = useState<ShipStatus | null>(null);
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState('');
-  const [coolDown, setCoolDown] = useState(0);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -46,7 +44,7 @@ export const Nav = () => {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [setCoolDown]);
+  }, [coolDown, setCoolDown]);
 
   const setSelectedShip = useCallback(
     (shipSymbol: string) => {
@@ -64,7 +62,7 @@ export const Nav = () => {
         setResponse(res);
       });
     }
-  }, [fetch, response, setResponse, setSelectedShip]);
+  }, [fetch, response, setResponse]);
 
   const ships = response?.data.map(ship => ship.symbol) || [];
 
@@ -123,9 +121,9 @@ export const Nav = () => {
           <p>{`${ship?.cargo.units || 0}/${ship?.cargo.capacity || 0}`}</p>
         </div>
 
-        <div className={'flex items-center gap-1'}>
+        <div className={'flex items-center gap-1 min-w-[50px]'}>
           <StopwatchIcon />
-          <p>{ship?.cooldown.remainingSeconds}</p>
+          <p>{coolDown}s</p>
         </div>
       </Card>
     </nav>

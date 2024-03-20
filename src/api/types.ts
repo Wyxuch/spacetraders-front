@@ -66,6 +66,7 @@ interface Cooldown {
   shipSymbol: string;
   totalSeconds: number;
   remainingSeconds: number;
+  expiration?: string;
 }
 
 interface Frame {
@@ -129,12 +130,6 @@ interface Registration {
   role: string;
 }
 
-interface Cargo {
-  capacity: number;
-  units: number;
-  inventory: any[];
-}
-
 export interface ShipStatus {
   data: ShipData[];
   meta: Meta;
@@ -182,4 +177,38 @@ export interface WaypointResponse {
 
 export interface NavigateBody {
   waypointSymbol: string;
+}
+
+interface Yield {
+  symbol: string;
+  units: number;
+}
+
+interface Extraction {
+  shipSymbol: string;
+  yield: Yield;
+}
+
+interface InventoryItem {
+  symbol: string;
+  name: string;
+  description: string;
+  units: number;
+}
+
+interface Cargo {
+  capacity: number;
+  units: number;
+  inventory: InventoryItem[];
+}
+
+export interface ExtractionData {
+  extraction: Extraction;
+  cooldown: Cooldown;
+  cargo: Cargo;
+  events: any[];
+}
+
+export interface ExtractionResponse {
+  data: ExtractionData;
 }
