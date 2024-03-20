@@ -4,7 +4,7 @@ export interface Meta {
   limit: number;
 }
 
-interface Data {
+export interface ShipData {
   symbol: string;
   nav: Nav;
   crew: Crew;
@@ -136,6 +136,6 @@ interface Cargo {
 }
 
 export interface ShipStatus {
-  data: Data[];
+  data: ShipData[];
   meta: Meta;
 }

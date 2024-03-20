@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { ReactNode, useEffect } from 'react';
 
 import { useAuthContext } from '@context/AuthContext';
+import { ShipsContext, ShipsContextProvider } from '@context/ShipsContext';
 
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
   const router = useRouter();
@@ -15,5 +16,5 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
     }
   }, [token, router]);
 
-  return <div>{children}</div>;
+  return <ShipsContextProvider>{children}</ShipsContextProvider>;
 }
