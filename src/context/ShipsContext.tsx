@@ -28,6 +28,7 @@ export const ShipsContext = createContext<ShipsContextValue>({
 export const ShipsContextProvider = ({ children }: Props) => {
   const fetch = useApi();
   const [ship, setShip] = useState<ShipData | undefined>();
+  console.log(ship);
 
   const refresh = () => {
     fetch<SingleShipStatus, undefined>(`${BASE_URL}/my/ships/${ship?.symbol}`).then(res => {
