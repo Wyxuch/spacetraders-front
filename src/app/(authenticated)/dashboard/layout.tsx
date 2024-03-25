@@ -1,30 +1,12 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
-import { ReactNode, useEffect, useState } from 'react';
+import { ReactNode } from 'react';
 
-import { BASE_URL } from '@consts/common';
-
-import { ShipStatus } from '@api/types';
-import { useAuthContext } from '@context/AuthContext';
-import { cn } from '@utils/shadcn/utils';
-
-import { Button } from '@components/shadcn/ui/button';
-import { Card } from '@components/shadcn/ui/card';
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList
-} from '@components/shadcn/ui/command';
-import { Popover, PopoverContent, PopoverTrigger } from '@components/shadcn/ui/popover';
-
-import { useApi } from '@hooks/useApi';
-import { CaretSortIcon, CheckIcon } from '@radix-ui/react-icons';
+import { Nav } from '@components/organisms/Nav/Nav';
+import Sidebar from '@components/organisms/Sidebar/Sidebar';
 
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
+<<<<<<< HEAD
   const router = useRouter();
   const { removeToken } = useAuthContext();
   const [open, setOpen] = useState(false);
@@ -119,6 +101,19 @@ if(!response){
         </Card>
       </nav>
       <main className={'w-full'}>{children}</main>
+=======
+  return (
+    <div className={'h-screen'}>
+      {/*TOP NAV*/}
+      <Nav />
+
+      <div className={`h-[calc(100%-70px)] flex shrink-0 gap-4`}>
+        {/*LEFT NAV*/}
+        <Sidebar />
+        {/*CONTENT*/}
+        <main className={'w-full h-full p-4 pl-0'}>{children}</main>
+      </div>
+>>>>>>> main
     </div>
   );
 }

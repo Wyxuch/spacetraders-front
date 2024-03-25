@@ -1,7 +1,10 @@
 import { useAuthContext } from '@context/AuthContext';
 
+import { useToast } from '@components/shadcn/ui/use-toast';
+
 export const useApi = () => {
   const { token, removeToken } = useAuthContext();
+  const { toast } = useToast();
   return async <T, K>(url: string, body?: K, incomingMethod?: 'GET' | 'PUT' | 'POST' | 'DELETE'): Promise<T | null> => {
     try {
       let method = 'GET';
@@ -18,7 +21,8 @@ export const useApi = () => {
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`
-        }
+        },
+        ...(body && { body: JSON.stringify(body) })
       });
 
       if (res.ok) {
@@ -29,6 +33,10 @@ export const useApi = () => {
           removeToken();
           return null;
         } else {
+          toast({
+            title: 'Error',
+            description: 'Something went wrong, check console for more info.'
+          });
           console.log('Error:', res.status, res.statusText);
           return null;
         }
