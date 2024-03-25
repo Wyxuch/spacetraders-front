@@ -21,6 +21,19 @@ export default function Home() {
   const { ship, refreshShip, setCoolDown } = useShipsContext();
   const { toast } = useToast();
 
+
+  const handleRefuel = () => {
+    if (!ship) {
+      toast({
+        title: 'Ship not found',
+        description: 'Select Ship'
+      });
+      return;
+    }
+    fetch<undefined, undefined>(`${BASE_URL}/my/ships/${ship.symbol}/refuel`, undefined, 'POST').then(res => {
+      refreshShip();
+    });
+  };
   const handleDock = () => {
     if (!ship) {
       toast({
@@ -71,6 +84,7 @@ export default function Home() {
               <h2 className={'text-3xl'}>Ship</h2>
               <div className={'flex gap-4'}>
                 <Button onClick={handleExtract}>Extract</Button>
+                <Button onClick={handleRefuel}>Refuel</Button>
                 {ship.nav.status === 'DOCKED' ? (
                   <Button onClick={handleOrbit}>Orbit</Button>
                 ) : (
