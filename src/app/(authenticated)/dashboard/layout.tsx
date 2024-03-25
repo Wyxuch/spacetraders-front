@@ -1,20 +1,9 @@
 'use client';
 
-import { ReactNode, useEffect, useState } from 'react';
-
+import { ReactNode } from 'react';
+import { useRouter } from 'next/navigation'
 import { Nav } from '@components/organisms/Nav/Nav';
 import Sidebar from '@components/organisms/Sidebar/Sidebar';
-import { ShipStatus } from '@api/types';
-import { Button } from '@components/shadcn/ui/button';
-import { Card } from '@components/shadcn/ui/card';
-import { BASE_URL } from '@consts/common';
-import { useAuthContext } from '@context/AuthContext';
-import { useApi } from '@hooks/useApi';
-import { CaretSortIcon } from '@radix-ui/react-icons';
-import { Popover, PopoverTrigger, PopoverContent } from '@radix-ui/react-popover';
-import { CommandInput, CommandEmpty, CommandGroup, CommandList, CommandItem } from 'cmdk';
-import { Command, CheckIcon } from 'lucide-react';
-import { useRouter } from 'next/router';
 
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
   const router = useRouter();
@@ -40,10 +29,6 @@ if(!response){
   };
 
   const ships = response?.data.map(ship => ship.symbol) || [];
-
-  function cn(arg0: string, arg1: string) {
-    throw new Error('Function not implemented.');
-  }
 
   return (
     <div className={'flex p-4 min-h-screen gap-4'}>
@@ -118,68 +103,3 @@ if(!response){
     </div>
   );
 }
-
-
-    function useRouter() {
-      throw new Error('Function not implemented.');
-    }
-
-
-    function useAuthContext(): { removeToken: any; } {
-      throw new Error('Function not implemented.');
-    }
-
-
-    function useState(arg0: boolean): [any, any] {
-      throw new Error('Function not implemented.');
-    }
-
-
-    function useApi() {
-      throw new Error('Function not implemented.');
-    }
-
-
-    function useEffect(arg0: () => void, arg1: any[]) {
-      throw new Error('Function not implemented.');
-    }
-
-    function useAuthContext(): { removeToken: any; } {
-      throw new Error('Function not implemented.');
-    }
-
-
-    function useState(arg0: boolean): [any, any] {
-      throw new Error('Function not implemented.');
-    }
-
-
-    function useApi() {
-      throw new Error('Function not implemented.');
-    }
-
-
-    function useEffect(arg0: () => void, arg1: any[]) {
-      throw new Error('Function not implemented.');
-    }
-
-
-    function useAuthContext(): { removeToken: any; } {
-      throw new Error('Function not implemented.');
-    }
-
-
-    function useState(arg0: boolean): [any, any] {
-      throw new Error('Function not implemented.');
-    }
-
-
-    function useApi() {
-      throw new Error('Function not implemented.');
-    }
-
-
-    function useEffect(arg0: () => void, arg1: any[]) {
-      throw new Error('Function not implemented.');
-    }
-
