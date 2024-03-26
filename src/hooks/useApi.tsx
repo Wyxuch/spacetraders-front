@@ -5,7 +5,7 @@ import { useToast } from '@components/shadcn/ui/use-toast';
 export const useApi = () => {
   const { token, removeToken } = useAuthContext();
   const { toast } = useToast();
-  return async <T, K>(url: string, body?: K, incomingMethod?: 'GET' | 'PUT' | 'POST' | 'DELETE'): Promise<T | null> => {
+  return async <T, K>(url: string, body?: K, incomingMethod?: 'GET' | 'PUT' | 'POST' | 'DELETE' | 'PATCH'): Promise<T | null> => {
     try {
       let method = 'GET';
       if (body) {
