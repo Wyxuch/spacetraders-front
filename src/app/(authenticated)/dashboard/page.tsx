@@ -6,6 +6,17 @@ import { ExtractionResponse } from '@api/types';
 import { useShipsContext } from '@context/ShipsContext';
 import { AnyObject } from '@utils/types';
 
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+
+} from "@components/shadcn/ui/select"
+
 import Paragraph from '@components/atoms/Typography/Paragraph';
 import { AccordionContent, AccordionItem, AccordionTrigger } from '@components/shadcn/ui/accordion';
 import { Button } from '@components/shadcn/ui/button';
@@ -15,6 +26,7 @@ import { useToast } from '@components/shadcn/ui/use-toast';
 
 import { useApi } from '@hooks/useApi';
 import { Accordion } from '@radix-ui/react-accordion';
+import { SelectScrollable } from '@components/organisms/Scrolable/Scrolable';
 
 export default function Home() {
   const fetch = useApi();
@@ -59,7 +71,134 @@ export default function Home() {
       refreshShip();
     });
   };
-
+  const handleFlightmodeStealth = () => {
+    if (!ship) {
+      toast({
+        title: 'Ship not found',
+        description: 'Select Ship'
+      });
+      return;
+    }
+    fetch<void, void>(`${BASE_URL}/my/ships/${ship.symbol}/nav`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        flightMode: 'STEALTH'
+      })
+    })
+    .then((res: Response) => {
+      if (!res.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return res.json();
+    })
+    .then(() => {
+      refreshShip();
+    })
+    .catch((error: Error) => {
+      console.error('Error:', error.message);
+    });
+    
+  };
+  
+  const handleFlightmodeDrift = () => {
+    if (!ship) {
+      toast({
+        title: 'Ship not found',
+        description: 'Select Ship'
+      });
+      return;
+    }
+    fetch<void, void>(`${BASE_URL}/my/ships/${ship.symbol}/nav`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        flightMode: 'Drift'
+      })
+    })
+    .then((res: Response) => {
+      if (!res.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return res.json();
+    })
+    .then(() => {
+      refreshShip();
+    })
+    .catch((error: Error) => {
+      console.error('Error:', error.message);
+    });
+    
+  };
+  
+  const handleFlightmodeBurn = () => {
+    if (!ship) {
+      toast({
+        title: 'Ship not found',
+        description: 'Select Ship'
+      });
+      return;
+    }
+    fetch<void, void>(`${BASE_URL}/my/ships/${ship.symbol}/nav`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        flightMode: 'BURN'
+      })
+    })
+    .then((res: Response) => {
+      if (!res.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return res.json();
+    })
+    .then(() => {
+      refreshShip();
+    })
+    .catch((error: Error) => {
+      console.error('Error:', error.message);
+    });
+    
+  };
+  
+  const handleFlightmodeCruise = () => {
+    if (!ship) {
+      toast({
+        title: 'Ship not found',
+        description: 'Select Ship'
+      });
+      return;
+    }
+    fetch<void, void>(`${BASE_URL}/my/ships/${ship.symbol}/nav`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        flightMode: 'CRUISE'
+      })
+    })
+    .then((res: Response) => {
+      if (!res.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return res.json();
+    })
+    .then(() => {
+      refreshShip();
+    })
+    .catch((error: Error) => {
+      console.error('Error:', error.message);
+    });
+    
+  };
+  
   const handleExtract = () => {
     if (!ship) {
       toast({
@@ -73,7 +212,7 @@ export default function Home() {
       refreshShip();
     });
   };
-
+  
   return (
     <Card className={'w-full h-full overflow-y-scroll'}>
       <CardContent className={'py-4'}>
@@ -85,6 +224,17 @@ export default function Home() {
               <div className={'flex gap-4'}>
                 <Button onClick={handleExtract}>Extract</Button>
                 <Button onClick={handleRefuel}>Refuel</Button>
+                <Select>
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder="Flight mode" />
+                  </SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value={handleFlightmodeCruise}>Crouse</SelectItem>
+                        <SelectItem value={handleFlightmodeBurn}>Burn</SelectItem>
+                        <SelectItem value={handleFlightmodeDrift}>Drift</SelectItem>
+                        <SelectItem value={handleFlightmodeStealth}>Stealth</SelectItem>
+                    </SelectContent>
+                  </Select>
                 {ship.nav.status === 'DOCKED' ? (
                   <Button onClick={handleOrbit}>Orbit</Button>
                 ) : (
@@ -223,3 +373,4 @@ export default function Home() {
     </Card>
   );
 }
+
