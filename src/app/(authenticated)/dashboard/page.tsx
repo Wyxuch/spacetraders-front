@@ -1,6 +1,6 @@
 'use client';
 
-import { BASE_URL } from '@consts/common';
+import { BASE_URL, FLIGHT_MODES } from '@consts/common';
 
 import { ExtractionResponse } from '@api/types';
 import { useShipsContext } from '@context/ShipsContext';
@@ -27,12 +27,13 @@ import { useToast } from '@components/shadcn/ui/use-toast';
 import { useApi } from '@hooks/useApi';
 import { Accordion } from '@radix-ui/react-accordion';
 import { SelectScrollable } from '@components/organisms/Scrolable/Scrolable';
+import { useEffect, useState } from 'react';
 
 export default function Home() {
   const fetch = useApi();
   const { ship, refreshShip, setCoolDown } = useShipsContext();
   const { toast } = useToast();
-
+  const [flightmode, setFlightmode] = useState(ship?.nav.flightMode || '')
 
   const handleRefuel = () => {
     if (!ship) {
@@ -71,133 +72,6 @@ export default function Home() {
       refreshShip();
     });
   };
-  const handleFlightmodeStealth = () => {
-    if (!ship) {
-      toast({
-        title: 'Ship not found',
-        description: 'Select Ship'
-      });
-      return;
-    }
-    fetch<void, void>(`${BASE_URL}/my/ships/${ship.symbol}/nav`, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        flightMode: 'STEALTH'
-      })
-    })
-    .then((res: Response) => {
-      if (!res.ok) {
-        throw new Error('Network response was not ok');
-      }
-      return res.json();
-    })
-    .then(() => {
-      refreshShip();
-    })
-    .catch((error: Error) => {
-      console.error('Error:', error.message);
-    });
-    
-  };
-  
-  const handleFlightmodeDrift = () => {
-    if (!ship) {
-      toast({
-        title: 'Ship not found',
-        description: 'Select Ship'
-      });
-      return;
-    }
-    fetch<void, void>(`${BASE_URL}/my/ships/${ship.symbol}/nav`, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        flightMode: 'Drift'
-      })
-    })
-    .then((res: Response) => {
-      if (!res.ok) {
-        throw new Error('Network response was not ok');
-      }
-      return res.json();
-    })
-    .then(() => {
-      refreshShip();
-    })
-    .catch((error: Error) => {
-      console.error('Error:', error.message);
-    });
-    
-  };
-  
-  const handleFlightmodeBurn = () => {
-    if (!ship) {
-      toast({
-        title: 'Ship not found',
-        description: 'Select Ship'
-      });
-      return;
-    }
-    fetch<void, void>(`${BASE_URL}/my/ships/${ship.symbol}/nav`, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        flightMode: 'BURN'
-      })
-    })
-    .then((res: Response) => {
-      if (!res.ok) {
-        throw new Error('Network response was not ok');
-      }
-      return res.json();
-    })
-    .then(() => {
-      refreshShip();
-    })
-    .catch((error: Error) => {
-      console.error('Error:', error.message);
-    });
-    
-  };
-  
-  const handleFlightmodeCruise = () => {
-    if (!ship) {
-      toast({
-        title: 'Ship not found',
-        description: 'Select Ship'
-      });
-      return;
-    }
-    fetch<void, void>(`${BASE_URL}/my/ships/${ship.symbol}/nav`, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        flightMode: 'CRUISE'
-      })
-    })
-    .then((res: Response) => {
-      if (!res.ok) {
-        throw new Error('Network response was not ok');
-      }
-      return res.json();
-    })
-    .then(() => {
-      refreshShip();
-    })
-    .catch((error: Error) => {
-      console.error('Error:', error.message);
-    });
-    
-  };
   
   const handleExtract = () => {
     if (!ship) {
@@ -213,6 +87,16 @@ export default function Home() {
     });
   };
   
+  useEffect(()=>{
+    if(flightmode && flightmode!==ship?.nav.flightMode)
+    {
+      fetch<undefined, {flightMode:string}>(`${BASE_URL}/my/ships/${ship!.symbol}/nav`, {flightMode:flightmode}, 'PATCH').then(res => {
+        refreshShip();
+      })
+
+    }
+  },[flightmode])  
+
   return (
     <Card className={'w-full h-full overflow-y-scroll'}>
       <CardContent className={'py-4'}>
@@ -220,19 +104,17 @@ export default function Home() {
         {ship ? (
           <div className={'mb-6'}>
             <div className={'flex justify-between items-center'}>
-              <h2 className={'text-3xl'}>Ship</h2>
+              <h2 className={'text-3xl'}>Ship - {ship.frame.name}</h2>
               <div className={'flex gap-4'}>
                 <Button onClick={handleExtract}>Extract</Button>
                 <Button onClick={handleRefuel}>Refuel</Button>
-                <Select>
+                <Select onValueChange={(value)=>setFlightmode(value)}>
                   <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder="Flight mode" />
+                    <SelectValue placeholder={ship.nav.flightMode} />
                   </SelectTrigger>
                     <SelectContent>
-                        <SelectItem value={handleFlightmodeCruise}>Crouse</SelectItem>
-                        <SelectItem value={handleFlightmodeBurn}>Burn</SelectItem>
-                        <SelectItem value={handleFlightmodeDrift}>Drift</SelectItem>
-                        <SelectItem value={handleFlightmodeStealth}>Stealth</SelectItem>
+                      {FLIGHT_MODES.map((flightmode:string)=><SelectItem value={flightmode} key={flightmode}>{flightmode}</SelectItem>)}
+                        
                     </SelectContent>
                   </Select>
                 {ship.nav.status === 'DOCKED' ? (
