@@ -7,11 +7,11 @@ import Sidebar from '@components/organisms/Sidebar/Sidebar';
 
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
   return (
-    <div className={'h-screen'}>
+    <div className={'h-screen overflow-hidden'}>
       {/*TOP NAV*/}
       <Nav />
 
-      <div className={`h-[calc(100%-70px)] flex shrink-0 gap-4`}>
+      <div className={`h-[calc(100%-70px)] flex shrink-0 gap-4 `}>
         {/*LEFT NAV*/}
         <Sidebar />
         {/*CONTENT*/}
