@@ -9,6 +9,7 @@ import { Meta, Waypoint, WaypointResponse } from '@api/types';
 import { useShipsContext } from '@context/ShipsContext';
 import { cn } from '@utils/shadcn/utils';
 
+import Loader from '@components/atoms/Loader/Loader';
 import WaypointAddress from '@components/atoms/WaypointAddress/WaypointAddress';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@components/shadcn/ui/accordion';
 import { Button } from '@components/shadcn/ui/button';
@@ -84,6 +85,7 @@ export default function Home() {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState<SearchValue | undefined>();
   const [lastUrl, setLastUrl] = useState<string>('');
+  const [loading, setLoading] = useState(false);
 
   const sortWaypoints = useCallback(
     (waypoints: Waypoint[]) => {
@@ -126,35 +128,41 @@ export default function Home() {
       });
       return;
     }
+    setLoading(true);
     const url = `${BASE_URL}/systems/${ship?.nav.systemSymbol}/waypoints?${value.waypointType}=${value.value}&limit=20`;
-    fetch<WaypointResponse, undefined>(url).then(res => {
-      if (res?.meta) {
-        setResponseMeta(res.meta);
-      }
+    fetch<WaypointResponse, undefined>(url)
+      .then(res => {
+        if (res?.meta) {
+          setResponseMeta(res.meta);
+        }
 
-      if (res?.data) {
-        setWaypoints(sortWaypoints(res.data));
-      }
+        if (res?.data) {
+          setWaypoints(sortWaypoints(res.data));
+        }
 
-      setLastUrl(url);
-    });
+        setLastUrl(url);
+      })
+      .finally(() => setLoading(false));
   };
 
   useEffect(() => {
     if (lastUrl && waypoints && responseMeta && responseMeta.total >= responseMeta.page * 20) {
+      setLoading(true);
       const url = `${lastUrl}&page=${responseMeta.page + 1}`;
       const timeoutId = setTimeout(() => {
-        fetch<WaypointResponse, undefined>(url).then(res => {
-          if (res?.meta) {
-            setResponseMeta(res.meta);
-          }
+        fetch<WaypointResponse, undefined>(url)
+          .then(res => {
+            if (res?.meta) {
+              setResponseMeta(res.meta);
+            }
 
-          if (res?.data) {
-            setWaypoints(sortWaypoints([...waypoints, ...res.data]));
-          }
+            if (res?.data) {
+              setWaypoints(sortWaypoints([...waypoints, ...res.data]));
+            }
 
-          setLastUrl(url);
-        });
+            setLastUrl(url);
+          })
+          .finally(() => setLoading(false));
       }, 500); // 500 milliseconds equals 0.5 seconds
 
       // Clear the timeout if the component is unmounted or if the dependencies change
@@ -224,9 +232,10 @@ export default function Home() {
           </Button>
         </div>
         <Separator className={'my-4'} />
-        <div className={'flex gap-4 mb-4'}>
+        <div className={'flex items-center gap-4 mb-4'}>
           <p>Found: {responseMeta?.total || 0}</p>
           <p>Loaded: {waypoints?.length || 0}</p>
+          {loading && <Loader size={20} />}
         </div>
         {waypoints && waypoints.map(location => <PlaceDescription key={location.symbol} locationData={location} />)}
       </CardContent>
