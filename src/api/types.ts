@@ -30,8 +30,8 @@ export interface Payment {
   onAccepted: number
   onFufilled: number
 }
-export interface SingleContractData {
-  data: ContractData;
+export interface ContractResponse {
+  data: ContractData[];
   meta: Meta;
 }
 export interface ShipData {
