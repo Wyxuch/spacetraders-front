@@ -3,7 +3,37 @@ export interface Meta {
   page: number;
   limit: number;
 }
+export interface ContractData {
+  cooldown: any;
+  id: string
+  factionSymbol: string
+  type: string
+  terms: Terms
+  deliver: Deliver
+  accepted: boolean
+  fulfilled: boolean
+  expiration: string
+  deadlineToAccept: string
+}
+export interface Terms {
+  deadline: string
+  payment: Payment
+}
+export interface Deliver {
+  tradeSymbol: string
+  destinationSymbol: boolean
+  unitsRequired: number
+  unitsFulfilled: number
 
+}
+export interface Payment {
+  onAccepted: number
+  onFufilled: number
+}
+export interface ContractResponse {
+  data: ContractData[];
+  meta: Meta;
+}
 export interface ShipData {
   symbol: string;
   nav: Nav;
