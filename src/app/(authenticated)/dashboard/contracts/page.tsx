@@ -19,12 +19,20 @@ export default function Home() {
   const { ship } = useShipsContext();
 
   useEffect(() => {
-    if (!contract) {
-      fetch<ContractResponse, undefined>(`${BASE_URL}/my/contracts`).then(res => {
+    fetch<ContractResponse, undefined>(`${BASE_URL}/my/contracts`).then(res => {
+      setContract(res?.data);
+    });
+  }, []);
+
+  useEffect(() => {
+    if (!contract && ship) {
+      fetch<ContractResponse, undefined>(
+        `https://stoplight.io/mocks/spacetraders/spacetraders/96627693/my/ship/${ship?.symbol}/negotiate/contract`
+      ).then(res => {
         setContract(res?.data);
       });
     }
-  }, [contract]);
+  }, []);
 
   return (
     <Card className={'w-full h-full overflow-y-scroll'}>
