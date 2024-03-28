@@ -6,6 +6,7 @@ import { BASE_URL } from '@consts/common';
 
 import { ContractData, ContractResponse } from '@api/types';
 
+import { useShipsContext } from '@context/ShipsContext';
 import Paragraph from '@components/atoms/Typography/Paragraph';
 import { Card, CardContent } from '@components/shadcn/ui/card';
 import { Separator } from '@components/shadcn/ui/separator';
@@ -15,6 +16,7 @@ import { useApi } from '@hooks/useApi';
 export default function Home() {
   const fetch = useApi();
   const [contract, setContract] = useState<ContractData[] | undefined>();
+  const { useShipsContext , refreshShip, setCoolDown } = useShipsContext(res?.data);
 
   useEffect(() => {
     if (!contract) {
@@ -45,8 +47,9 @@ export default function Home() {
               </>
             ))
           ) : (
-            <p>{'No contracts :<'}</p>
-          )}
+            fetch<ContractResponse, undefined>(`${BASE_URL}${ship.symbol}/my/negotiate/contract`).then(res => {
+              setContract(res?.data);
+            });
         </CardContent>
       ) : (
         <p>Loading</p>
