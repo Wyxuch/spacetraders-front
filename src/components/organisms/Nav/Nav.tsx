@@ -53,7 +53,7 @@ export const Nav = () => {
       setCoolDown(currShip?.cooldown.remainingSeconds || 0);
       setShip(currShip);
     },
-    [response?.data, setShip]
+    [response?.data, setCoolDown, setShip]
   );
 
   useEffect(() => {
