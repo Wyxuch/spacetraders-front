@@ -14,8 +14,8 @@ spec:
         app: spacetraders-front
     spec:
       containers:
-        - name: bb-site
-          image: getting-started
+        - name: spacetraders-front
+          image: spacetraders-front
           imagePullPolicy: Never
 ---
 apiVersion: v1
