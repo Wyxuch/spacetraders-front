@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: spacetraders-front
-          image: spacetraders-front
+          image: spacetraders-front:latest
           imagePullPolicy: Never
 ---
 apiVersion: v1
