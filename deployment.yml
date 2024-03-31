@@ -25,8 +25,7 @@ metadata:
   namespace: default
 spec:
   type: NodePort
-  ipFamilies:
-    - IPv6
+  ipFamilyPolicy: PreferDualStack
   selector:
     app: spacetraders-front
   ports:
