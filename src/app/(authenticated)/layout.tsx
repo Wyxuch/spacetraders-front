@@ -21,7 +21,7 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
         description: 'Token is missing or invalid, logging out'
       });
     }
-  }, [token, router]);
+  }, [token, router, toast]);
 
   return <ShipsContextProvider>{children}</ShipsContextProvider>;
 }

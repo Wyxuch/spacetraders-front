@@ -11,7 +11,7 @@ const Sidebar = () => {
 
   return (
     <aside className={`w-[240px] h-full p-4 pr-0`}>
-      <Card className={'h-full w-full p-2 overflow-y-scroll'}>
+      <Card className={'h-full w-full p-2 overflow-hidden'}>
         <Button
           onClick={() => router.push('/dashboard')}
           variant={'outline'}

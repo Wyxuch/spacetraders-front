@@ -32,7 +32,7 @@ export default function Home() {
         setContract(res?.data);
       });
     }
-  }, []);
+  }, [contract]);
 
   return (
     <Card className={'w-full h-full overflow-y-scroll'}>

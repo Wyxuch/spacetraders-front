@@ -1,39 +1,29 @@
 'use client';
 
+import { useEffect, useState } from 'react';
+
 import { BASE_URL, FLIGHT_MODES } from '@consts/common';
 
 import { ExtractionResponse } from '@api/types';
 import { useShipsContext } from '@context/ShipsContext';
 import { AnyObject } from '@utils/types';
 
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-
-} from "@components/shadcn/ui/select"
-
 import Paragraph from '@components/atoms/Typography/Paragraph';
 import { AccordionContent, AccordionItem, AccordionTrigger } from '@components/shadcn/ui/accordion';
 import { Button } from '@components/shadcn/ui/button';
 import { Card, CardContent } from '@components/shadcn/ui/card';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@components/shadcn/ui/select';
 import { Separator } from '@components/shadcn/ui/separator';
 import { useToast } from '@components/shadcn/ui/use-toast';
 
 import { useApi } from '@hooks/useApi';
 import { Accordion } from '@radix-ui/react-accordion';
-import { SelectScrollable } from '@components/organisms/Scrolable/Scrolable';
-import { useEffect, useState } from 'react';
 
 export default function Home() {
   const fetch = useApi();
   const { ship, refreshShip, setCoolDown } = useShipsContext();
   const { toast } = useToast();
-  const [flightmode, setFlightmode] = useState(ship?.nav.flightMode || '')
+  const [flightmode, setFlightmode] = useState(ship?.nav.flightMode || '');
 
   const handleRefuel = () => {
     if (!ship) {
@@ -72,7 +62,7 @@ export default function Home() {
       refreshShip();
     });
   };
-  
+
   const handleExtract = () => {
     if (!ship) {
       toast({
@@ -86,16 +76,18 @@ export default function Home() {
       refreshShip();
     });
   };
-  
-  useEffect(()=>{
-    if(flightmode && flightmode!==ship?.nav.flightMode)
-    {
-      fetch<undefined, {flightMode:string}>(`${BASE_URL}/my/ships/${ship!.symbol}/nav`, {flightMode:flightmode}, 'PATCH').then(res => {
-        refreshShip();
-      })
 
+  useEffect(() => {
+    if (flightmode && flightmode !== ship?.nav.flightMode) {
+      fetch<undefined, { flightMode: string }>(
+        `${BASE_URL}/my/ships/${ship!.symbol}/nav`,
+        { flightMode: flightmode },
+        'PATCH'
+      ).then(res => {
+        refreshShip();
+      });
     }
-  },[flightmode])  
+  }, [fetch, flightmode, refreshShip, ship]);
 
   return (
     <Card className={'w-full h-full overflow-y-scroll'}>
@@ -108,15 +100,18 @@ export default function Home() {
               <div className={'flex gap-4'}>
                 <Button onClick={handleExtract}>Extract</Button>
                 <Button onClick={handleRefuel}>Refuel</Button>
-                <Select onValueChange={(value)=>setFlightmode(value)}>
+                <Select onValueChange={value => setFlightmode(value)}>
                   <SelectTrigger className="w-[180px]">
                     <SelectValue placeholder={ship.nav.flightMode} />
                   </SelectTrigger>
-                    <SelectContent>
-                      {FLIGHT_MODES.map((flightmode:string)=><SelectItem value={flightmode} key={flightmode}>{flightmode}</SelectItem>)}
-                        
-                    </SelectContent>
-                  </Select>
+                  <SelectContent>
+                    {FLIGHT_MODES.map((flightmode: string) => (
+                      <SelectItem value={flightmode} key={flightmode}>
+                        {flightmode}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
                 {ship.nav.status === 'DOCKED' ? (
                   <Button onClick={handleOrbit}>Orbit</Button>
                 ) : (
@@ -255,4 +250,3 @@ export default function Home() {
     </Card>
   );
 }
-
