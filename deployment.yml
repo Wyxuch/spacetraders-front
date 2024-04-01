@@ -25,10 +25,9 @@ metadata:
   namespace: default
 spec:
   type: NodePort
-  ipFamilyPolicy: PreferDualStack
   selector:
     app: spacetraders-front
   ports:
     - port: 3000
-      targetPort: 80
+      targetPort: 3000
       nodePort: 30278
