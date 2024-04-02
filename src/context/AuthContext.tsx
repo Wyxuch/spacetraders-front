@@ -19,7 +19,7 @@ export const AuthContextProvider = ({ children }: Props) => {
   const [token, setToken] = useState<string | undefined>();
 
   useEffect(() => {
-    if (!token) {
+    if (typeof window !== 'undefined' && !token) {
       const localToken = localStorage.getItem('token');
       if (localToken) {
         setToken(localToken);

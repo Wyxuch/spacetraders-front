@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { BASE_URL } from '@consts/common';
 
 import { ShipStatus } from '@api/types';
+import { useAuthContext } from '@context/AuthContext';
 import { useShipsContext } from '@context/ShipsContext';
 import { cn } from '@utils/shadcn/utils';
 
@@ -31,6 +32,7 @@ import {
 
 export const Nav = () => {
   const { ship, setShip, coolDown, setCoolDown } = useShipsContext();
+  const { token } = useAuthContext();
   const fetch = useApi();
   const [response, setResponse] = useState<ShipStatus | null>(null);
   const [open, setOpen] = useState(false);
@@ -57,7 +59,7 @@ export const Nav = () => {
   );
 
   useEffect(() => {
-    if (!response) {
+    if (token && !response) {
       fetch<ShipStatus, undefined>(`${BASE_URL}/my/ships`).then(res => {
         setResponse(res);
       });

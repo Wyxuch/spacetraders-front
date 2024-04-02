@@ -14,7 +14,7 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
   const { token } = useAuthContext();
 
   useEffect(() => {
-    if (!token) {
+    if (typeof window !== 'undefined' && !token) {
       router.push('/');
       toast({
         title: 'Authentication error',

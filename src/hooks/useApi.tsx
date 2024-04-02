@@ -5,7 +5,11 @@ import { useToast } from '@components/shadcn/ui/use-toast';
 export const useApi = () => {
   const { token, removeToken } = useAuthContext();
   const { toast } = useToast();
-  return async <T, K>(url: string, body?: K, incomingMethod?: 'GET' | 'PUT' | 'POST' | 'DELETE' | 'PATCH'): Promise<T | null> => {
+  return async <T, K>(
+    url: string,
+    body?: K,
+    incomingMethod?: 'GET' | 'PUT' | 'POST' | 'DELETE' | 'PATCH'
+  ): Promise<T | null> => {
     try {
       let method = 'GET';
       if (body) {
@@ -26,7 +30,11 @@ export const useApi = () => {
       });
 
       if (res.ok) {
-        return (await res.json()) as T;
+        const resParsed = await res.json();
+        if (!resParsed) {
+          return null;
+        }
+        return res as T;
       } else {
         if (res.status === 403 || res.status === 401) {
           console.log('Wrong token, logging out...');
