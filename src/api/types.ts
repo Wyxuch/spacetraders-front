@@ -33,6 +33,10 @@ export interface ContractData {
   expiration: string;
   deadlineToAccept: string;
 }
+export interface NoContractResponse {
+  data: ContractData;
+  meta: Meta;
+}
 export interface ContractResponse {
   data: ContractData[];
   meta: Meta;
