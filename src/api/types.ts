@@ -21,7 +21,7 @@ export interface Terms {
   payment: Payment;
 }
 
-interface Deliver {
+export interface Deliver {
   tradeSymbol: string;
   destinationSymbol: string;
   unitsRequired: number;
