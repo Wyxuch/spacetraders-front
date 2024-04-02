@@ -30,11 +30,7 @@ export const useApi = () => {
       });
 
       if (res.ok) {
-        const resParsed = await res.json();
-        if (!resParsed) {
-          return null;
-        }
-        return res as T;
+        return (await res.json()) as T;
       } else {
         if (res.status === 403 || res.status === 401) {
           console.log('Wrong token, logging out...');
