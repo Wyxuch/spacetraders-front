@@ -3,41 +3,40 @@ export interface Meta {
   page: number;
   limit: number;
 }
-export interface ContractData {
-  cooldown: any;
-  id: string;
-  factionSymbol: string;
-  type: string;
-  terms: Terms;
-  deliver: Deliver[];
-  accepted: boolean;
-  fulfilled: boolean;
-  expiration: string;
-  deadlineToAccept: string;
+
+ 
+interface Payment {
+  onAccepted: number;
+  onFulfilled: number;
 }
 
-export interface Terms {
-  deadline: string;
-  payment: Payment;
-}
-
-export interface Deliver {
+interface Deliver {
   tradeSymbol: string;
   destinationSymbol: string;
   unitsRequired: number;
   unitsFulfilled: number;
 }
 
-export interface Payment {
-  onAccepted: number;
-  onFulfilled: number;
+interface Terms {
+  deadline: string;
+  payment: Payment;
+  deliver: Deliver[];
 }
 
+export interface ContractData {
+  id: string;
+  factionSymbol: string;
+  type: string;
+  terms: Terms;
+  accepted: boolean;
+  fulfilled: boolean;
+  expiration: string;
+  deadlineToAccept: string;
+}
 export interface ContractResponse {
   data: ContractData[];
   meta: Meta;
 }
-
 export interface ShipData {
   symbol: string;
   nav: Nav;
