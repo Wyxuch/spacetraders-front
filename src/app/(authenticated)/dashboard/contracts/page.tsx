@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { BASE_URL } from '@consts/common';
 
@@ -16,51 +16,72 @@ import { useApi } from '@hooks/useApi';
 export default function Home() {
   const fetch = useApi();
   const [contract, setContract] = useState<ContractData[] | undefined>();
+  const [nocontract, setnocontract] = useState<ContractData[] | undefined>();
   const { ship } = useShipsContext();
 
   useEffect(() => {
-    fetch<ContractResponse, undefined>(`${BASE_URL}/my/contracts`).then(res => {
-      setContract(res?.data);
-    });
-  }, []);
-
-  useEffect(() => {
-    if (!contract && ship) {
-      fetch<ContractResponse, undefined>(
-        `https://stoplight.io/mocks/spacetraders/spacetraders/96627693/my/ship/${ship?.symbol}/negotiate/contract`
-      ).then(res => {
+    if (typeof nocontract === 'undefined' && ship) {
+      fetch<ContractResponse, undefined>(`${BASE_URL}/my/ships/${ship?.symbol}/negotiate/contract`).then(res => {
         setContract(res?.data);
       });
     }
-  }, [contract]);
+  }, [nocontract, fetch, ship]);
+
+  useEffect(() => {
+    if (typeof contract === 'undefined') {
+      fetch<ContractResponse, undefined>(`${BASE_URL}/my/contracts`).then(res => {
+        setContract(res?.data);
+      });
+    }
+  }, [contract, fetch]);
 
   return (
     <Card className={'w-full h-full overflow-y-scroll'}>
       {contract ? (
         <CardContent className={'py-4'}>
-          {/* CONTRACTS */}
+          {/*CONTRACTS*/}
+
           {contract.length ? (
-            contract.map((contract, i) => (
-              <div key={i}>
-                <h3 className={'mb-2 text-xl'}> Contract</h3>
+            contract.map((element, i) => (
+              <div key={element.id}>
+                <h3 className={'mb-2 text-xl'}>Contract{i}</h3>
                 <div className={'grid grid-cols-4'}>
-                  <Paragraph>{`Faction: ${contract.factionSymbol}`}</Paragraph>
-                  <Paragraph>{`Type: ${contract.type}`}</Paragraph>
-                  <Paragraph>{`Deadline: ${contract.terms.deadline}`}</Paragraph>
-                  {contract.terms.deliver.map((deliverable, index) => (
-                    <div key={index}>
-                      <Paragraph>{`Deliver ${deliverable.unitsRequired}/${deliverable.unitsRequired} ${deliverable.tradeSymbol}`}</Paragraph>
-                      <Paragraph>{`To: ${deliverable.destinationSymbol}`}</Paragraph>
-                      <Paragraph>{`Accepted: ${contract.terms.payment.onAccepted}$`}</Paragraph>
-                      <Paragraph>{`On delivery: ${contract.terms.payment.onFulfilled}$`}</Paragraph>
-                    </div>
+                  <Paragraph>{`Faction: ${element.factionSymbol}`}</Paragraph>
+                  <Paragraph>{`Type: ${element.type}`}</Paragraph>
+                  <Paragraph>{`Deadline: ${element.terms.deadline}`}</Paragraph>
+                  {element.terms.deliver.map((delivery, j) => (
+                    <React.Fragment key={j}>
+                      <Paragraph>{`Deliver: ${delivery.tradeSymbol}`}</Paragraph>
+                      <Paragraph>{`To: ${delivery.destinationSymbol}`}</Paragraph>
+                    </React.Fragment>
                   ))}
                 </div>
-                <Separator className={'m-2'} />
+                <Separator className={'m-2'} /> {}
               </div>
             ))
           ) : (
-            <p>No contracts</p>
+            <p>{'No contracts :<'}</p>
+          )}
+          {nocontract?.length ? (
+            nocontract.map((element, i) => (
+              <div key={element.id}>
+                <h3 className={'mb-2 text-xl'}>Contract{i}</h3>
+                <div className={'grid grid-cols-4'}>
+                  <Paragraph>{`Faction: ${element.factionSymbol}`}</Paragraph>
+                  <Paragraph>{`Type: ${element.type}`}</Paragraph>
+                  <Paragraph>{`Deadline: ${element.terms.deadline}`}</Paragraph>
+                  {element.terms.deliver.map((delivery, j) => (
+                    <React.Fragment key={j}>
+                      <Paragraph>{`Deliver: ${delivery.tradeSymbol}`}</Paragraph>
+                      <Paragraph>{`To: ${delivery.destinationSymbol}`}</Paragraph>
+                    </React.Fragment>
+                  ))}
+                </div>
+                <Separator className={'m-2'} /> {}
+              </div>
+            ))
+          ) : (
+            <p>{'No contracts :<'}</p>
           )}
         </CardContent>
       ) : (
