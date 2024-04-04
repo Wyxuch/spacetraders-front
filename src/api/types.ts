@@ -36,6 +36,7 @@ export interface ContractData {
 export interface NoContractResponse {
   data: ContractData;
   meta: Meta;
+  status: number;
 }
 export interface ContractResponse {
   data: ContractData[];
