@@ -65,8 +65,8 @@ export default function Home() {
                   )}
                   {element.terms.deliver.map((delivery, j) => (
                     <React.Fragment key={j}>
-                      <Paragraph>{`Deliver: ${delivery.tradeSymbol}`}</Paragraph>
-                      <Paragraph>{`To: ${delivery.destinationSymbol}`}</Paragraph>
+                      <Paragraph>{`Deliver: ${delivery.tradeSymbol} ${delivery.unitsFulfilled}/${delivery.unitsRequired}
+                      to ${delivery.destinationSymbol}`}</Paragraph>
                     </React.Fragment>
                   ))}
                 </div>
