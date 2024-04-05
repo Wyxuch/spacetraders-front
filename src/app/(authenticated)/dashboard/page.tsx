@@ -100,7 +100,7 @@ export default function Home() {
               <div className={'flex gap-4'}>
                 <Button onClick={handleExtract}>Extract</Button>
                 <Button onClick={handleRefuel}>Refuel</Button>
-                <Select onValueChange={value => setFlightmode(value)}>
+                <Select onValueChange={(value: string) => setFlightmode(value)}>
                   <SelectTrigger className="w-[180px]">
                     <SelectValue placeholder={ship.nav.flightMode} />
                   </SelectTrigger>
