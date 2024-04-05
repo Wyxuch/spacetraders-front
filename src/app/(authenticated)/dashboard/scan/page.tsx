@@ -5,7 +5,8 @@ import { useCallback, useEffect, useState } from 'react';
 import { BASE_URL } from '@consts/common';
 import { TRAITS, TYPES } from '@consts/models';
 
-import { Meta, Waypoint, WaypointResponse } from '@api/types';
+import { Meta } from '@api/types/common';
+import { Waypoint, WaypointResponse } from '@api/types/nav';
 import { useShipsContext } from '@context/ShipsContext';
 import { getDistance } from '@utils/helpers';
 import { cn } from '@utils/shadcn/utils';
@@ -96,21 +97,24 @@ export default function Home() {
   const [lastUrl, setLastUrl] = useState<string>('');
   const [loading, setLoading] = useState(false);
 
-  const parseWaypoint = (waypoint: Waypoint): ExtendedWaypoint => {
-    return {
-      ...waypoint,
-      distance: getDistance(
-        {
-          x: ship!.nav.route.destination.x,
-          y: ship!.nav.route.destination.y
-        },
-        {
-          x: waypoint.x,
-          y: waypoint.y
-        }
-      )
-    };
-  };
+  const parseWaypoint = useCallback(
+    (waypoint: Waypoint): ExtendedWaypoint => {
+      return {
+        ...waypoint,
+        distance: getDistance(
+          {
+            x: ship!.nav.route.destination.x,
+            y: ship!.nav.route.destination.y
+          },
+          {
+            x: waypoint.x,
+            y: waypoint.y
+          }
+        )
+      };
+    },
+    [ship]
+  );
 
   const sortWaypoints = useCallback(
     (waypoints: ExtendedWaypoint[]) => {
@@ -184,7 +188,7 @@ export default function Home() {
       // Clear the timeout if the component is unmounted or if the dependencies change
       return () => clearTimeout(timeoutId);
     }
-  }, [fetch, lastUrl, responseMeta, sortWaypoints, waypoints]);
+  }, [fetch, lastUrl, parseWaypoint, responseMeta, sortWaypoints, waypoints]);
 
   return (
     <Card className={'w-full h-full overflow-y-scroll'}>

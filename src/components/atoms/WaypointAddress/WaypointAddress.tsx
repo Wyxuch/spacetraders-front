@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import { BASE_URL } from '@consts/common';
 
-import { NavigateBody, WaypointResponse } from '@api/types';
+import { NavigateBody, WaypointResponse } from '@api/types/common';
 import { useShipsContext } from '@context/ShipsContext';
 
 import { Button } from '@components/shadcn/ui/button';

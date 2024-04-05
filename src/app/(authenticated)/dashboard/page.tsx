@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 
 import { BASE_URL, FLIGHT_MODES } from '@consts/common';
 
-import { ExtractionResponse } from '@api/types';
+import { ExtractionResponse } from '@api/types/common';
 import { useShipsContext } from '@context/ShipsContext';
 import { AnyObject } from '@utils/types';
 

@@ -1,47 +1,5 @@
-export interface Meta {
-  total: number;
-  page: number;
-  limit: number;
-}
+import { Cargo, Cooldown, Meta } from '@api/types/common';
 
- 
-interface Payment {
-  onAccepted: number;
-  onFulfilled: number;
-}
-
-interface Deliver {
-  tradeSymbol: string;
-  destinationSymbol: string;
-  unitsRequired: number;
-  unitsFulfilled: number;
-}
-
-interface Terms {
-  deadline: string;
-  payment: Payment;
-  deliver: Deliver[];
-}
-
-export interface ContractData {
-  id: string;
-  factionSymbol: string;
-  type: string;
-  terms: Terms;
-  accepted: boolean;
-  fulfilled: boolean;
-  expiration: string;
-  deadlineToAccept: string;
-}
-export interface NoContractResponse {
-  data: ContractData;
-  meta: Meta;
-  status: number;
-}
-export interface ContractResponse {
-  data: ContractData[];
-  meta: Meta;
-}
 export interface ShipData {
   symbol: string;
   nav: Nav;
@@ -98,13 +56,6 @@ interface Fuel {
 interface Consumed {
   amount: number;
   timestamp: string;
-}
-
-interface Cooldown {
-  shipSymbol: string;
-  totalSeconds: number;
-  remainingSeconds: number;
-  expiration?: string;
 }
 
 interface Frame {
@@ -176,77 +127,4 @@ export interface ShipStatus {
 export interface SingleShipStatus {
   data: ShipData;
   meta: Meta;
-}
-
-interface Trait {
-  symbol: string;
-  name: string;
-  description: string;
-}
-
-interface Chart {
-  submittedBy: string;
-  submittedOn: string;
-}
-
-interface Faction {
-  symbol: string;
-}
-
-export interface Waypoint {
-  systemSymbol: string;
-  symbol: string;
-  type: string;
-  x: number;
-  y: number;
-  orbitals: any[];
-  traits: Trait[];
-  modifiers: any[];
-  chart: Chart;
-  faction: Faction;
-  orbits: string;
-  isUnderConstruction: boolean;
-}
-
-export interface WaypointResponse {
-  data: Waypoint[];
-  meta: Meta;
-}
-
-export interface NavigateBody {
-  waypointSymbol: string;
-}
-
-interface Yield {
-  symbol: string;
-  units: number;
-}
-
-interface Extraction {
-  shipSymbol: string;
-  yield: Yield;
-}
-
-interface InventoryItem {
-  symbol: string;
-  name: string;
-  description: string;
-  units: number;
-}
-
-interface Cargo {
-  capacity: number;
-  units: number;
-  inventory: InventoryItem[];
-}
-
-export interface ExtractionData {
-  extraction: Extraction;
-  cooldown: Cooldown;
-  cargo: Cargo;
-  events: any[];
-}
-
-export interface ExtractionResponse {
-  data: ExtractionData;
 }

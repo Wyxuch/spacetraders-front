@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { BASE_URL } from '@consts/common';
 
-import { ShipStatus } from '@api/types';
+import { ShipStatus } from '@api/types/ship';
 import { useAuthContext } from '@context/AuthContext';
 import { useShipsContext } from '@context/ShipsContext';
 import { cn } from '@utils/shadcn/utils';
@@ -64,7 +64,7 @@ export const Nav = () => {
         setResponse(res);
       });
     }
-  }, [fetch, response, setResponse]);
+  }, [fetch, response, setResponse, token]);
 
   const ships = response?.data.map(ship => ship.symbol) || [];
 
