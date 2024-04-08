@@ -5,7 +5,7 @@ import { createContext } from 'react';
 
 import { BASE_URL } from '@consts/common';
 
-import { ShipData, ShipStatus, SingleShipStatus } from '@api/types';
+import { ShipData, SingleShipStatus } from '@api/types/ship';
 
 import { useApi } from '@hooks/useApi';
 

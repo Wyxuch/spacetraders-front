@@ -4,7 +4,7 @@ import { useState } from 'react';
 
 import { BASE_URL } from '@consts/common';
 
-import { ShipStatus } from '@api/types';
+import { ShipStatus } from '@api/types/ship';
 
 import { Button } from '@components/shadcn/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@components/shadcn/ui/card';

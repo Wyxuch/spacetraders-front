@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 
 import { BASE_URL } from '@consts/common';
 
-import { ContractData, ContractResponse, NoContractResponse } from '@api/types';
+import { ContractData, ContractResponse, NoContractResponse } from '@api/types/contract';
 import { useShipsContext } from '@context/ShipsContext';
 
 import Paragraph from '@components/atoms/Typography/Paragraph';

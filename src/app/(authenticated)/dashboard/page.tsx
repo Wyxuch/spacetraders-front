@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 
 import { BASE_URL, FLIGHT_MODES } from '@consts/common';
 
-import { ExtractionResponse } from '@api/types';
+import { ExtractionResponse } from '@api/types/common';
 import { useShipsContext } from '@context/ShipsContext';
 import { AnyObject } from '@utils/types';
 
@@ -100,7 +100,7 @@ export default function Home() {
               <div className={'flex gap-4'}>
                 <Button onClick={handleExtract}>Extract</Button>
                 <Button onClick={handleRefuel}>Refuel</Button>
-                <Select onValueChange={value => setFlightmode(value)}>
+                <Select onValueChange={(value: string) => setFlightmode(value)}>
                   <SelectTrigger className="w-[180px]">
                     <SelectValue placeholder={ship.nav.flightMode} />
                   </SelectTrigger>

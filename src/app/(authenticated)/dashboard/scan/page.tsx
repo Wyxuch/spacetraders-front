@@ -5,8 +5,10 @@ import { useCallback, useEffect, useState } from 'react';
 import { BASE_URL } from '@consts/common';
 import { TRAITS, TYPES } from '@consts/models';
 
-import { Meta, Waypoint, WaypointResponse } from '@api/types';
+import { Meta } from '@api/types/common';
+import { Waypoint, WaypointResponse } from '@api/types/nav';
 import { useShipsContext } from '@context/ShipsContext';
+import { getDistance } from '@utils/helpers';
 import { cn } from '@utils/shadcn/utils';
 
 import Loader from '@components/atoms/Loader/Loader';
@@ -30,13 +32,21 @@ import { useToast } from '@components/shadcn/ui/use-toast';
 import { useApi } from '@hooks/useApi';
 import { CaretSortIcon, CheckIcon } from '@radix-ui/react-icons';
 
-const PlaceDescription = ({ locationData }: { locationData: Waypoint }) => {
+interface ExtendedWaypoint extends Waypoint {
+  distance: number;
+}
+
+const PlaceDescription = ({ locationData }: { locationData: ExtendedWaypoint }) => {
   return (
     <Card className={'p-4 mb-6'}>
       <div className={'flex justify-around'}>
         <div>
           <span>Waypoint:</span>
           <WaypointAddress location={locationData.symbol} />
+        </div>
+        <div>
+          <span>Distance: </span>
+          <span>{locationData.distance ? locationData.distance.toFixed(2) : "You're here!"}</span>
         </div>
         <div>
           <span>Type: </span>
@@ -81,33 +91,42 @@ export default function Home() {
   const { toast } = useToast();
   const { ship } = useShipsContext();
   const [responseMeta, setResponseMeta] = useState<Meta | null>(null);
-  const [waypoints, setWaypoints] = useState<Waypoint[] | null>(null);
+  const [waypoints, setWaypoints] = useState<ExtendedWaypoint[] | null>(null);
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState<SearchValue | undefined>();
   const [lastUrl, setLastUrl] = useState<string>('');
   const [loading, setLoading] = useState(false);
 
+  const parseWaypoint = useCallback(
+    (waypoint: Waypoint): ExtendedWaypoint => {
+      return {
+        ...waypoint,
+        distance: getDistance(
+          {
+            x: ship!.nav.route.destination.x,
+            y: ship!.nav.route.destination.y
+          },
+          {
+            x: waypoint.x,
+            y: waypoint.y
+          }
+        )
+      };
+    },
+    [ship]
+  );
+
   const sortWaypoints = useCallback(
-    (waypoints: Waypoint[]) => {
+    (waypoints: ExtendedWaypoint[]) => {
       return waypoints.sort((a, b) => {
         if (!ship) {
           return 0;
         }
-
-        const distanceA = Math.sqrt(
-          Math.pow(ship?.nav.route.destination.x - a.x, 2) + Math.pow(ship?.nav.route.destination.y - a.y, 2)
-        );
-        const distanceB = Math.sqrt(
-          Math.pow(ship?.nav.route.destination.x - b.x, 2) + Math.pow(ship?.nav.route.destination.y - b.y, 2)
-        );
-
-        if (distanceA > distanceB) {
-          return -1;
+        if (a.distance === b.distance) {
+          return 0;
         }
-        if (distanceA < distanceB) {
-          return 1;
-        }
-        return 0;
+
+        return a.distance < b.distance ? -1 : 1;
       });
     },
     [ship]
@@ -137,7 +156,7 @@ export default function Home() {
         }
 
         if (res?.data) {
-          setWaypoints(sortWaypoints(res.data));
+          setWaypoints(res.data.map(waypoint => parseWaypoint(waypoint)));
         }
 
         setLastUrl(url);
@@ -157,7 +176,8 @@ export default function Home() {
             }
 
             if (res?.data) {
-              setWaypoints(sortWaypoints([...waypoints, ...res.data]));
+              const parsedWaypoints = res.data.map(waypoint => parseWaypoint(waypoint));
+              setWaypoints(sortWaypoints([...waypoints, ...parsedWaypoints]));
             }
 
             setLastUrl(url);
@@ -168,7 +188,7 @@ export default function Home() {
       // Clear the timeout if the component is unmounted or if the dependencies change
       return () => clearTimeout(timeoutId);
     }
-  }, [fetch, lastUrl, responseMeta, sortWaypoints, waypoints]);
+  }, [fetch, lastUrl, parseWaypoint, responseMeta, sortWaypoints, waypoints]);
 
   return (
     <Card className={'w-full h-full overflow-y-scroll'}>
