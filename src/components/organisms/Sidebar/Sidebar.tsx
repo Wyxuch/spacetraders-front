@@ -33,6 +33,13 @@ const Sidebar = () => {
         >
           Contracts
         </Button>
+        <Button
+          onClick={() => router.push('/dashboard/materials')}
+          variant={'outline'}
+          className={'w-full text-left justify-between mb-2'}
+        >
+          Materials
+        </Button>
         <Button onClick={removeToken} variant={'destructive'} className={'w-full text-left justify-between'}>
           Log Out
         </Button>

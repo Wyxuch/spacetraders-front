@@ -16,7 +16,7 @@ export default function Home() {
   const [response, setResponse] = useState<ShipStatus | null>(null);
 
   const handleClick = () => {
-    fetch<ShipStatus, undefined>(`${BASE_URL}/my/ships`).then(res => {
+    fetch<ShipStatus, undefined>(`${BASE_URL}/my/ships`, y).then(res => {
       setResponse(res);
     });
   };
