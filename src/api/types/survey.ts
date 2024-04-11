@@ -1,11 +1,11 @@
-export interface Deposit {
+export interface Deposits {
   symbol: string;
 }
 
-export interface Survey {
+export interface Surveys {
   signature: string;
   symbol: string;
-  deposits: Deposit[];
+  deposits: Deposits[];
   expiration: string;
   size: "SMALL" | "MEDIUM" | "LARGE";
 }
@@ -19,7 +19,7 @@ export interface Cooldown {
 
 export interface SurveyData {
   cooldown: Cooldown;
-  surveys: Survey[];
+  surveys: Surveys[];
 }
 
 export interface SurveyResponse {

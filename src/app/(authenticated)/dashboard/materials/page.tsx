@@ -16,37 +16,58 @@ export default function Home() {
   const { ship } = useShipsContext();
   const fetch = useApi();
   const { toast } = useToast();
-  const [surveyResponse, setSurveyResponse] = useState<SurveyResponse | undefined>();
+  const [surveyResponse, setSurveyResponse,] = useState<SurveyResponse | undefined>();
 
   const createSurvey = () => {
     if (!ship) {
       toast({
         title: 'Ship not found',
-        description: 'Select Ship'
+        description: 'Select a Ship'
       });
       return;
     }
-    fetch<SurveyResponse, undefined>(`${BASE_URL}/my/ships/${ship.symbol}/survey`, undefined, 'POST').then(res => {
-      setSurveyResponse(res?.data);
+    fetch(`${BASE_URL}/my/ships/${ship.symbol}/survey`, {
+      method: 'POST'
+    })
+    .then(res =>  setSurveyResponse(res?.data || ({} as SurveyResponse)))
+    .catch(error => {
+      console.error('Error creating survey:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to create survey. Please try again later.'
+      });
     });
-     [createSurvey, fetch, ship];
   };
+  
   return (
     <Card className={'w-full h-full'}>
-      {surveyResponse &&} (
       <CardContent>
-        <Button onClick={createSurvey}>Create survey</Button>
-                  {/*Materials*/}
-                    <h3 className={'mb-2 text-xl'}>Crew</h3>
-            <div className={'grid grid-cols-4'}>
-              <Paragraph>{`Capacity: ${deposit.symbol}`}</Paragraph>
-              <Paragraph>{`Morale: ${ship.crew.morale}`}</Paragraph>
-              <Paragraph>{`Wages: ${ship.crew.wages}`}</Paragraph>
-              <Paragraph>{`Rotation: ${ship.crew.rotation}`}</Paragraph>
-            </div>
-                    )
-      );
+        {surveyResponse ? (
+          <>
+            {surveyResponse ? (
+              surveyResponse.data.surveys.map((surveys, index) => ( 
+                <div key={surveys.signature}>
+                  <h3 className={'mb-2 text-xl'}>Survey {index + 1}</h3>
+                  <div className={'grid grid-cols-4'}>
+                    <Paragraph>{`Symbol: ${surveys.signature}`}</Paragraph>
+                    <Paragraph>{`Size: ${surveys.size}`}</Paragraph>
+                  </div>
+                  <h4 className={'mt-4 mb-2 text-lg'}>Deposits</h4>
+                  <ul>
+                    {surveys.deposits.map(deposits => (
+                      <li key={deposits.symbol}>{deposits.symbol}</li>
+                    ))}
+                  </ul>
+                </div> 
+              ))
+            ) : (
+              <Button onClick={createSurvey}>Create survey</Button>
+            )}
+          </>
+        ) : (
+          <Button onClick={createSurvey}>Create survey</Button>
+        )}
       </CardContent>
     </Card>
   );
-};
+}
