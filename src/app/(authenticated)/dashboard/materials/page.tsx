@@ -51,7 +51,12 @@ export default function Home() {
       return;
     }
     fetch<undefined, SurveyResponse>(`${BASE_URL}/my/ships/${ship.symbol}/extract/survey`, {
-      data: surveyData
+      data: {
+        signature: surveyData?.surveys[0].signature,
+        symbol: surveyData?.surveys[0].symbol,
+        expiration: surveyData?.surveys[0].expiration,
+        deposits: surveyData?.surveys[0].deposits,
+      }
     }).then(() => {
       createSurvey();
     });
@@ -60,42 +65,40 @@ export default function Home() {
     <Card className={'w-full h-full'}>
       <CardContent>
         {surveyData ? (
-          <>
-            {surveyData ? (
-              surveyData.surveys.map((surveys, index) => (
-                <div key={surveys.signature}>
-                  <h3 className={'mb-2 text-xl'}>Survey {index + 1}</h3>
-                  <div className={'grid grid-cols-4'}>
-                    <Paragraph>{`Symbol: ${surveys.signature}`}</Paragraph>
-                    <Paragraph>{`Size: ${surveys.size}`}</Paragraph>
+          surveyData.surveys.map((survey, surveyIndex) => (
+            <div key={survey.signature}>
+              <h3 className={'mb-2 text-xl'}>Survey {surveyIndex + 1}</h3>
+              <div className={'grid grid-cols-4'}>
+                <Paragraph>{`Symbol: ${survey.signature}`}</Paragraph>
+                <Paragraph>{`Size: ${survey.size}`}</Paragraph>
+              </div>
+              <h4 className={'mt-4 mb-2 text-lg'}>Deposits</h4>
+              <ul>
+                {survey.deposits.map((deposit, depositIndex) => (
+                  <li key={deposit.symbol}>
+                    {deposit.symbol}
                     <Popover>
-      <PopoverTrigger asChild>
-        <Button variant="link">{`extract resource ${index + 1}`}</Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-80">
-        <Button onClick={handleExtract} className={'w-full'}>
-          Extract
-        </Button>
-      </PopoverContent>
-    </Popover>
-                
-                  </div>
-                  <h4 className={'mt-4 mb-2 text-lg'}>Deposits</h4>
-                  <ul>
-    {surveys.deposits.map(deposits => (
-                      <li key={deposits.symbol}>{deposits.symbol}</li>
-                    ))}
-                  </ul>
-                </div>
-              ))
-            ) : (
-              <Button onClick={createSurvey}>Create survey</Button>
-            )}
-          </>
+                      <PopoverTrigger asChild>
+                        <span>
+                          <Button variant="link">{`Extract resource ${surveyIndex + 1}.${depositIndex + 1}`}</Button>
+                        </span>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-80">
+                        <Button onClick={() => handleExtract} className={'w-full'}>
+                          Extract
+                        </Button>
+                      </PopoverContent>
+                    </Popover>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))
         ) : (
           <Button onClick={createSurvey}>Create survey</Button>
         )}
       </CardContent>
     </Card>
   );
-}
+  
+};
