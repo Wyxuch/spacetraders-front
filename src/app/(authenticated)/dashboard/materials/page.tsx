@@ -1,34 +1,27 @@
 'use client';
 
 import { useState } from 'react';
-
 import { BASE_URL } from '@consts/common';
-
 import { SurveyData, SurveyResponse, Surveys } from '@api/types/survey';
 import { useShipsContext } from '@context/ShipsContext';
-
-import Paragraph from '@components/atoms/Typography/Paragraph';
+import { useApi } from '@hooks/useApi';
+import { useToast } from '@components/shadcn/ui/use-toast';
 import { Button } from '@components/shadcn/ui/button';
 import { Card, CardContent } from '@components/shadcn/ui/card';
-import { useToast } from '@components/shadcn/ui/use-toast';
-
-import { useApi } from '@hooks/useApi';
 import { Popover, PopoverContent, PopoverTrigger } from '@radix-ui/react-popover';
-
-
-
+import Paragraph from '@components/atoms/Typography/Paragraph';
 
 export default function Home() {
-  const { ship } = useShipsContext();
+  const { ship, refreshShip } = useShipsContext();
   const fetch = useApi();
   const { toast } = useToast();
   const [surveyData, setSurveyData] = useState<SurveyData | undefined>();
 
   const createSurvey = () => {
-    if (!ship) {
+    if (ship?.nav.status === 'DOCKED') {
       toast({
-        title: 'Ship not found',
-        description: 'Select a Ship'
+        title: 'orbit bitch',
+        description: 'you dick'
       });
       return;
     }
@@ -42,29 +35,54 @@ export default function Home() {
         });
       });
   };
-  const handleExtract = () => {
+
+  const handleOrbit = () => {
     if (!ship) {
       toast({
-        title: 'Missing data',
-        description: 'Select Ship and retry'
+        title: 'Ship not found',
+        description: 'Select Ship'
       });
       return;
+    }
+    fetch<undefined, undefined>(`${BASE_URL}/my/ships/${ship.symbol}/orbit`, undefined, 'POST')
+      .then(res => {
+        refreshShip();
+      });
+  };
+
+  const handleDock = () => {
+    if (!ship) {
+      toast({
+        title: 'Ship not found',
+        description: 'Select Ship'
+      });
+      return;
+    }
+    fetch<undefined, undefined>(`${BASE_URL}/my/ships/${ship.symbol}/dock`, undefined, 'POST')
+      .then(res => {
+        refreshShip();
+      });
+  };
+
+  const handleExtract = (survey: Surveys, depositIndex: number) => {
+    if (ship?.nav.status === 'IN_ORBIT') {
+      handleDock();
     }
     fetch<undefined, SurveyResponse>(`${BASE_URL}/my/ships/${ship.symbol}/extract/survey`, {
       data: {
         signature: surveyData?.surveys[0].signature,
         symbol: surveyData?.surveys[0].symbol,
         expiration: surveyData?.surveys[0].expiration,
-        deposits: surveyData?.surveys[0].deposits,
+        deposits: surveyData?.surveys[0].deposits[depositIndex],
       }
     }).then(() => {
-      createSurvey();
     });
   };
+
   return (
     <Card className={'w-full h-full'}>
       <CardContent>
-        {surveyData ? (
+        {surveyData !== undefined ? (
           surveyData.surveys.map((survey, surveyIndex) => (
             <div key={survey.signature}>
               <h3 className={'mb-2 text-xl'}>Survey {surveyIndex + 1}</h3>
@@ -84,7 +102,7 @@ export default function Home() {
                         </span>
                       </PopoverTrigger>
                       <PopoverContent className="w-80">
-                        <Button onClick={() => handleExtract} className={'w-full'}>
+                        <Button onClick={() => handleExtract(survey, depositIndex)} className={'w-full'}>
                           Extract
                         </Button>
                       </PopoverContent>
@@ -100,5 +118,4 @@ export default function Home() {
       </CardContent>
     </Card>
   );
-  
-};
+}
