@@ -65,16 +65,15 @@ export default function Home() {
   };
 
   const handleExtract = (survey: Surveys, depositIndex: number) => {
-    if (ship?.nav.status === 'IN_ORBIT') {
-      handleDock();
+    if (ship?.nav.status === 'DOCKED') {
+      handleOrbit();
     }
-    fetch<undefined, SurveyResponse>(`${BASE_URL}/my/ships/${ship.symbol}/extract/survey`, {
-      data: {
+    fetch<SurveyResponse, Surveys>(`${BASE_URL}/my/ships/${ship.symbol}/extract/survey`, {
         signature: surveyData?.surveys[0].signature,
         symbol: surveyData?.surveys[0].symbol,
         expiration: surveyData?.surveys[0].expiration,
-        deposits: surveyData?.surveys[0].deposits[depositIndex],
-      }
+        deposits: [surveyData?.surveys[0].deposits[depositIndex]],
+        size: surveyData?.surveys[0].size,
     }).then(() => {
     });
   };
