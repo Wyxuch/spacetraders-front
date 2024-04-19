@@ -48,7 +48,7 @@ export default function Home() {
 
       return;
     }
-    fetch<undefined, undefined>(`${BASE_URL}/my/ships/${ship.symbol}/orbit`, undefined, 'POST').then(res => {
+    fetch<undefined, undefined>(`${BASE_URL}/my/ships/${ship.symbol}/orbit`, undefined, 'POST').then(_res => {
       refreshShip();
     });
   };
@@ -80,7 +80,7 @@ export default function Home() {
     <Card className={'w-full h-full'}>
       <CardContent>
         {surveyData !== undefined ? (
-          surveyData.surveys.map((survey, surveyIndex) => (
+          surveyData.surveys.map(survey => (
             <div key={survey.signature}>
               <h3 className={'mb-2 text-xl'}>Survey {survey.size}</h3>
               <div className={'grid grid-cols-4'}>
@@ -91,7 +91,7 @@ export default function Home() {
               </div>
               <h4 className={'mt-4 mb-2 text-lg'}>Deposits</h4>
               <ul>
-                {survey.deposits.map((deposit, depositIndex) => (
+                {survey.deposits.map(deposit => (
                   <li key={deposit.symbol}>{deposit.symbol}</li>
                 ))}
               </ul>
