@@ -34,6 +34,13 @@ const Sidebar = () => {
           Contracts
         </Button>
         <Button
+          onClick={() => router.push('/dashboard/shipyard')}
+          variant={'outline'}
+          className={'w-full text-left justify-between mb-2'}
+        >
+          Shipyard
+        </Button>
+        <Button
           onClick={() => router.push('/dashboard/materials')}
           variant={'outline'}
           className={'w-full text-left justify-between mb-2'}
